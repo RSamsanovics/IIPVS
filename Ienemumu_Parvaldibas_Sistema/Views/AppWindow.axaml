@@ -1,0 +1,106 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Ienemumu_Parvaldibas_Sistema.Views.AppWindow">
+
+	<!-- ===================== -->
+	<!-- WINDOW STYLES -->
+	<!-- ===================== -->
+	<Window.Styles>
+
+		<!-- Base style navigacijas pogam -->
+		<Style Selector="Button.nav">
+			<Setter Property="Background" Value="#333333"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		</Style>
+
+		<!-- Hover stavoklis navigacijas pogam -->
+		<Style Selector="Button.nav:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="#1B078C"/>
+		</Style>
+
+		<!-- Izveletas (selected) pogas stavoklis -->
+		<Style Selector="Button.nav:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="#17076E"/>
+		</Style>
+	</Window.Styles>
+
+	<!-- ===================== -->
+	<!-- ROOT LAYOUT -->
+	<!-- ===================== -->
+	<Grid>
+
+		<!-- Divas kolonnas -->
+		<!-- 1. Navigacija -->
+		<!-- 2. Galvenais saturs -->
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="180"/>
+			<!-- navigation -->
+			<ColumnDefinition Width="*"/>
+			<!-- content -->
+		</Grid.ColumnDefinitions>
+
+		<!-- ===================== -->
+		<!-- LEFT NAVIGATION BAR -->
+		<!-- ===================== -->
+		<Border Grid.Column="0"
+				Background="#1E1E1E"
+				Padding="10">
+
+			<!-- Vertikals menu -->
+			<StackPanel Spacing="8">
+
+				<!-- Menu virsraksts -->
+				<TextBlock Text="Menu"
+						   Foreground="Gray"
+						   FontSize="12"
+						   Margin="0,0,0,10"/>
+
+				<!-- Navigacijas pogas -->
+				<!-- Click notikumi apstradati AppWindow.axaml.cs -->
+				<Button x:Name="HomeButton"
+						Content="Home"
+						Classes="nav"
+						Click="Home_Click"/>
+
+				<Button x:Name="ImportButton"
+						Content="Import CSV"
+						Classes="nav"
+						Click="Import_Click"/>
+
+				<Button x:Name="ManuallyButton"
+						Content="Add data manually"
+						Classes="nav"
+						Click="Manually_Click"/>
+
+				<Button x:Name="ReportsButton"
+						Content="Reports"
+						Classes="nav"
+						Click="Reports_Click"/>
+
+				<Button x:Name="SettingsButton"
+						Content="Settings"
+						Classes="nav"
+						Click="Settings_Click"/>
+			</StackPanel>
+		</Border>
+
+		<!-- ===================== -->
+		<!-- MAIN CONTENT ZONE -->
+		<!-- ===================== -->
+		<!-- Saja zona tiek ieladeti Views (HomeView, ImportView, u.c.) -->
+		<Border Grid.Column="1"
+				Background="#2A2A2A"
+				Padding="20">
+
+			<!-- Dinamisks saturs -->
+			<ContentControl x:Name="MainContent"/>
+		</Border>
+
+	</Grid>
+</Window>

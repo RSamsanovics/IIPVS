@@ -1,0 +1,237 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Ienemumu_Parvaldibas_Sistema.ViewModels"
+	xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+    x:Class="Ienemumu_Parvaldibas_Sistema.Views.Pages.HomeView"
+    x:DataType="vm:HomeViewModel"
+    mc:Ignorable="d">
+
+	<!-- ROOT GRID -->
+	<!-- Visa Home skata pamata izkartojums -->
+	<!-- 1 rinda: KPI info -->
+	<!-- 2 rinda: grafiki + konfiguracija -->
+	<Grid RowDefinitions="Auto,*"
+          ColumnDefinitions="*,320">
+
+		<!-- ===================== -->
+		<!-- TOP INFO / KPI STRIP -->
+		<!-- ===================== -->
+		<!-- Parada kopsummas no HomeViewModel -->
+		<Border Grid.Row="0"
+        Grid.ColumnSpan="2"
+        Padding="12"
+        Background="#1F1F1F">
+
+			<!-- KPI strip -->
+			<!-- IncomingThisMonth, SpentThisMonth, Balance -->
+			<StackPanel Orientation="Horizontal" Spacing="32">
+				<TextBlock Text="{Binding IncomingThisMonth, StringFormat= Earned: {0:F2} EUR}" FontSize="16"/>
+				<TextBlock Text="{Binding SpentThisMonth, StringFormat= Spent: {0:F2} EUR}" FontSize="16"/>
+				<TextBlock Text="{Binding Balance, StringFormat=Balance: {0:F2} EUR}" FontSize="16"/>
+			</StackPanel>
+		</Border>
+
+		<!-- ===================== -->
+		<!-- MAIN CHART AREA -->
+		<!-- ===================== -->
+		<!-- Kreisaja puse: visi 4 grafiki -->
+		<Grid Grid.Row="1"
+              Grid.Column="0"
+              Margin="12"
+              RowDefinitions="*,*"
+              ColumnDefinitions="*,*"
+              RowSpacing="12"
+              ColumnSpacing="12">
+
+			<!-- Chart 1: Spending by category -->
+			<Border Background="#2A2A2A" CornerRadius="6">
+				<lvc:CartesianChart
+					Series="{Binding SpendingByPartnerSeries}"
+					XAxes="{Binding SpendingByPartnerXAxes}"
+					YAxes="{Binding SpendingByPartnerYAxes}"
+					Height="350"/>
+			</Border>
+
+			<!-- Chart 2: Daily spending -->
+			<Border Grid.Column="1"
+                    Background="#2A2A2A"
+                    CornerRadius="6">
+				<lvc:CartesianChart
+					Series="{Binding SpendingByDaySeries}"
+					XAxes="{Binding SpendingByDayXAxes}"
+					YAxes="{Binding SpendingByDayYAxes}"
+					Height="350"/>
+			</Border>
+
+			<!-- Chart 3: Income usage (pie chart) -->
+			<Border Grid.Row="1"
+                    Background="#2A2A2A"
+                    CornerRadius="6">
+				<Grid>
+					<!-- Piesaistits IncomeUsageSeries -->
+					<lvc:PieChart
+						Series="{Binding IncomeUsageSeries}"
+						LegendPosition="Hidden"/>
+
+					<!-- Teksts pa vidu: cik % ir izlietots -->
+					<TextBlock
+						Text="{Binding IncomeUsagePercent, StringFormat={}{0}% used}"
+						FontSize="18"
+						FontWeight="Bold"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"/>
+				</Grid>
+			</Border>
+
+			<!-- Chart 4: Income vs Spent -->
+			<Border Grid.Row="1"
+                    Grid.Column="1"
+                    Background="#2A2A2A"
+                    CornerRadius="6">
+				<lvc:CartesianChart
+					Series="{Binding IncomeVsSpentSeries}"
+					XAxes="{Binding IncomeVsSpentXAxes}"
+					YAxes="{Binding IncomeVsSpentYAxes}"/>
+			</Border>
+
+		</Grid>
+
+		<!-- ===================== -->
+		<!-- RIGHT CONFIG PANEL -->
+		<!-- ===================== -->
+		<!-- Labaja puse: filtri, chart selector, grupas -->
+		<Border Grid.Row="1"
+        Grid.Column="1"
+        Padding="12"
+        Background="#1F1F1F">
+
+			<!-- ONE root container -->
+			<StackPanel Spacing="12">
+
+				<!-- Chart selector -->
+				<!-- Izvele no ChartId enum -->
+				<TextBlock Text="Chart" FontSize="16"/>
+				<ComboBox ItemsSource="{Binding ChartOptions}"
+						  SelectedItem="{Binding ActiveChart}" />
+
+				<!-- MONTH RANGE (Charts 1,3,4) -->
+				<!-- Redzams, ja ShowMonthRange == true -->
+				<StackPanel IsVisible="{Binding ShowMonthRange}" Spacing="6">
+
+					<TextBlock Text="From (Year / Month)"/>
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<NumericUpDown Value="{Binding CurrentMonthRange.FromYear}"
+									   Minimum="2000"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentMonthRange.FromMonth}"
+									   Minimum="1"
+									   Maximum="12"
+									   FormatString="F0"
+									   Increment="1"/>
+					</StackPanel>
+
+					<TextBlock Text="To (Year / Month)"/>
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<NumericUpDown Value="{Binding CurrentMonthRange.ToYear}"
+									   Minimum="2000"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentMonthRange.ToMonth}"
+									   Minimum="1"
+									   Maximum="12"
+									   FormatString="F0"
+									   Increment="1"/>
+					</StackPanel>
+
+				</StackPanel>
+
+				<!-- DAY RANGE (Chart 2 only) -->
+				<!-- Redzams, ja ShowDayRange == true -->
+				<StackPanel IsVisible="{Binding ShowDayRange}" Spacing="6">
+
+					<TextBlock Text="From (Y / M / D)"/>
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<NumericUpDown Value="{Binding CurrentDayRange.FromYear}"
+									   Minimum="2000"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentDayRange.FromMonth}"
+									   Minimum="1"
+									   Maximum="12"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentDayRange.FromDay}"
+									   Minimum="1"
+									   Maximum="31"
+									   FormatString="F0"
+									   Increment="1"/>
+					</StackPanel>
+
+					<TextBlock Text="To (Y / M / D)"/>
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<NumericUpDown Value="{Binding CurrentDayRange.ToYear}"
+									   Minimum="2000"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentDayRange.ToMonth}"
+									   Minimum="1"
+									   Maximum="12"
+									   FormatString="F0"
+									   Increment="1"/>
+						<NumericUpDown Value="{Binding CurrentDayRange.ToDay}"
+									   Minimum="1"
+									   Maximum="31"
+									   FormatString="F0"
+									   Increment="1"/>
+					</StackPanel>
+
+				</StackPanel>
+
+				<!-- ===================== -->
+				<!-- GROUP EDITOR -->
+				<!-- ===================== -->
+				<Separator Margin="0,8"/>
+
+				<TextBlock Text="Groups"
+						   FontSize="16"/>
+
+				<!-- Grupas no HomeViewModel.Groups -->
+				<ItemsControl ItemsSource="{Binding Groups}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border Background="#2A2A2A"
+									Padding="8"
+									CornerRadius="4"
+									Margin="0,0,0,6">
+								<StackPanel Spacing="4">
+
+									<!-- Enable + name + delete -->
+									<StackPanel Orientation="Horizontal" Spacing="6">
+										<CheckBox IsChecked="{Binding IsEnabled}"/>
+										<TextBox Text="{Binding Name}"
+												 Width="120"/>
+										<Button Content="✕" Click="OnRemoveGroupClicked"/>
+									</StackPanel>
+
+									<!-- Keywords teksta ievade -->
+									<TextBox Text="{Binding KeywordsText}"
+											 Watermark="keywords (comma separated)"/>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<!-- Pievieno jaunu grupu -->
+				<Button Content="Add Group"
+						Click="OnAddGroupClicked"/>
+
+			</StackPanel>
+		</Border>
+
+	</Grid>
+</UserControl>

@@ -1,0 +1,104 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Ienemumu_Parvaldibas_Sistema.ViewModels"
+        x:Class="Ienemumu_Parvaldibas_Sistema.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Width="400"
+        Height="500"
+        Title="Ienakumu parvaldibas sistema">
+
+	<!-- Galvenais vertikalais konteiners -->
+	<StackPanel Margin="20" Spacing="10">
+
+		<!-- Sveiciens no MainWindowViewModel -->
+		<TextBlock Text="{Binding Greeting}" FontSize="18"/>
+
+		<!-- Instrukcija lietotaja izvelei -->
+		<TextBlock Text="{Binding Choice}"/>
+
+		<!-- ===================== -->
+		<!-- EMPTY STATE -->
+		<!-- ===================== -->
+		<!-- Redzams, ja nav neviena lietotaja -->
+		<Border IsVisible="{Binding HasNoUsers}"
+				Background="#2A2A2A"
+				CornerRadius="8"
+				Padding="20"
+				Margin="5">
+
+			<TextBlock Text="No users yet"
+					   HorizontalAlignment="Center"
+					   Foreground="Gray"
+					   FontSize="14"/>
+		</Border>
+
+		<!-- ===================== -->
+		<!-- USER LIST -->
+		<!-- ===================== -->
+		<!-- Redzams, ja ir vismaz viens lietotajs -->
+		<ListBox IsVisible="{Binding HasUsers}"
+				 ItemsSource="{CompiledBinding Users}"
+				 SelectedItem="{CompiledBinding SelectedUser}"
+				 Margin="5">
+
+			<!-- Katrs elements ir UserEntry -->
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="vm:UserEntry">
+					<TextBlock Text="{CompiledBinding Name}" />
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<!-- ===================== -->
+		<!-- ADD USER BUTTON -->
+		<!-- ===================== -->
+		<!-- Parada lietotaja izveides paneli -->
+		<Button Content="+"
+                Command="{Binding ShowCreateUserCommand}"
+                Width="40"
+                HorizontalAlignment="Center"/>
+
+		<!-- ===================== -->
+		<!-- CREATE USER PANEL -->
+		<!-- ===================== -->
+		<!-- Redzams, ja IsCreatingUser == true -->
+		<StackPanel IsVisible="{Binding IsCreatingUser}"
+                    Margin="10"
+                    Spacing="6">
+
+			<TextBlock Text="Lietotajvards"/>
+			<TextBox Text="{Binding NewUsername}"/>
+
+			<TextBlock Text="Parole"/>
+			<TextBox Text="{Binding NewPassword}"/>
+
+			<TextBlock Text="Atkartot paroli"/>
+			<TextBox Text="{Binding NewConfirmPassword}"/>
+
+			<!-- Izsauc CreateUserCommand -->
+			<Button Content="Izveidot lietotaju"
+                    Command="{Binding CreateUserCommand}"/>
+		</StackPanel>
+
+		<!-- ===================== -->
+		<!-- LOGIN PANEL -->
+		<!-- ===================== -->
+		<!-- Redzams, ja ir izvelets lietotajs -->
+		<StackPanel IsVisible="{Binding HasSelectedUser}"
+            Margin="10"
+            Spacing="6">
+
+			<TextBlock Text="Enter password"/>
+
+			<!-- Parole piesaistita LoginPassword -->
+			<TextBox Text="{Binding LoginPassword}"/>
+
+			<!-- Izsauc LoginCommand -->
+			<Button Content="Login" Command="{Binding LoginCommand}"/>
+
+			<!-- Kluudas vai statusa teksts -->
+			<TextBlock Text="{Binding LoginStatus}"/>
+		</StackPanel>
+
+	</StackPanel>
+</Window>
